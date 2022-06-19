@@ -1,0 +1,24 @@
+diff --git a/ffmpeg_generated.gni b/ffmpeg_generated.gni
+index 6f30b9198d..f606db0073 100644
+--- a/ffmpeg_generated.gni
++++ b/ffmpeg_generated.gni
+@@ -90,6 +90,7 @@ if ((is_android && current_cpu == "arm" && ffmpeg_branding == "Chrome") || (is_a
+     "libavformat/rmsipr.c",
+     "libavformat/url.c",
+     "libavformat/vorbiscomment.c",
++    "libavformat/w64.c",
+     "libavformat/wavdec.c",
+     "libavutil/aes.c",
+     "libavutil/autorename_libavutil_cpu.c",
+diff --git a/ffmpeg_generated.gypi b/ffmpeg_generated.gypi
+index 4c7b1b94b3..5c2ac2a229 100644
+--- a/ffmpeg_generated.gypi
++++ b/ffmpeg_generated.gypi
+@@ -574,6 +574,7 @@
+           'libavformat/rmsipr.c',
+           'libavformat/url.c',
+           'libavformat/vorbiscomment.c',
++          'libavformat/w64.c',
+           'libavformat/wavdec.c',
+           'libavutil/aes.c',
+           'libavutil/autorename_libavutil_cpu.c',

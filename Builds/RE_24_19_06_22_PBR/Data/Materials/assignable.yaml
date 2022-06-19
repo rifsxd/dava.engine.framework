@@ -1,0 +1,69 @@
+-
+ name: "Wireframe"
+ path: Wireframe.material
+-
+ name: "Textured Alphatest"
+ path: Textured.Alphatest.material
+-
+ name: "Textured Alphablend"
+ path: Textured.Alphablend.material
+-
+ name: "Textured Opaque"
+ path: Textured.Opaque.material
+-
+ name: "Detail [8.5]"
+ path: Detail.material
+-
+ name: "Detail [Q] [8.5]"
+ path: DetailAllQualities.material
+-
+ name: "Decal [8.5]"
+ path: Decal.material
+-
+ name: "SpeedTree [8.5]"
+ path: SpeedTree.material
+-
+ name: "SpeedTree Spherical Lit [Q] [8.5]"
+ path: SpeedTree.SphericalLit.material
+-
+ name: "Spherical Lit [Q] [8.5]"
+ path: SphericalLit.material
+-
+ name: "Textured [8.5]"
+ path: Textured.material
+-
+ name: "Textured Lightmap [8.5]"
+ path: TextureLightmap.material
+-
+ name: "VertexColor [8.5]"
+ path: VertexColor.material
+-
+ name: "Physically Based Lightmap [8.5]"
+ path: PBRLightmap.material
+-
+ name: "Simple Color [8.5]"
+ path: SimpleColor.material
+-
+ name: "Landscape AllQualities [Q]"
+ path: TileMaskAllQualities.material
+-
+ name: "Water All Qualities [Q]"
+ path: WaterAllQualities.material
+-
+ name: "Normalized Opaque [OLD]"
+ path: NormalizedBlinnPhongAllQualities.Opaque.material
+-
+ name: "Normalized Alphatest [OLD]"
+ path: NormalizedBlinnPhongAllQualities.Alphatest.material
+-
+ name: "Normalized Alphatest + Alphablend [OLD]"
+ path: NormalizedBlinnPhongAllQualities.Alphatest.Alphablend.material
+-
+ name: "Standard [PBR]"
+ path: StandardAllQualities.material
+-
+ name: "BlinnPhong [Q]"
+ path: BlinnPhongAllQualities.material
+-
+ name: "Shadow Volume"
+ path: ShadowVolume.material

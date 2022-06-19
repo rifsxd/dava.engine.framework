@@ -1,0 +1,22 @@
+diff --git a/build/configs.gypi b/build/configs.gypi
+index c3564b4cf..9b13597d2 100755
+--- a/build/configs.gypi
++++ b/build/configs.gypi
+@@ -61,7 +61,7 @@
+               ['component=="shared_library"', {
+                 'RuntimeLibrary': '3',  # 3 = /MDd (debug DLL)
+               }, {
+-                'RuntimeLibrary': '1',  # 1 = /MTd (debug static)
++                'RuntimeLibrary': '3',  # 3 = /MDd (debug DLL)
+               }],
+             ],
+           },
+@@ -90,7 +90,7 @@
+               ['component=="shared_library"', {
+                 'RuntimeLibrary': '2',  # 2 = /MD (nondebug DLL)
+               }, {
+-                'RuntimeLibrary': '0',  # 0 = /MT (nondebug static)
++                'RuntimeLibrary': '2',  # 2 = /MD (nondebug DLL)
+               }],
+             ],
+           },

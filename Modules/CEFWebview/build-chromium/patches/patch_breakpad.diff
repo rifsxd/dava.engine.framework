@@ -1,0 +1,24 @@
+diff --git a/build/common.gypi b/build/common.gypi
+index b9466a3..ba36a62 100644
+--- a/build/common.gypi
++++ b/build/common.gypi
+@@ -251,8 +251,8 @@
+       'win_release_Optimization%': '2', # 2 = /Os
+       'win_debug_Optimization%': '0',   # 0 = /Od
+       # See http://msdn.microsoft.com/en-us/library/aa652367(VS.71).aspx
+-      'win_release_RuntimeLibrary%': '0', # 0 = /MT (nondebug static)
+-      'win_debug_RuntimeLibrary%': '1',   # 1 = /MTd (debug static)
++      'win_release_RuntimeLibrary%': '2', # 2 = /MT (nondebug DLL)
++      'win_debug_RuntimeLibrary%': '3',   # 3 = /MDd (debug DLL)
+ 
+       'release_extra_cflags%': '',
+       'debug_extra_cflags%': '',
+@@ -470,7 +470,7 @@
+         'msvs_settings': {
+           'VCCLCompilerTool': {
+             'Optimization': '0',
+-            'RuntimeLibrary': '0',
++            'RuntimeLibrary': '2',
+             'BufferSecurityCheck': 'false',
+           },
+           'VCLinkerTool': {

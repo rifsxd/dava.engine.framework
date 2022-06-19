@@ -1,0 +1,15 @@
+apply plugin: 'com.android.library'
+apply from: "../../../../Platforms/Android/common.gradle"
+
+android {
+    sourceSets.main {
+        java.srcDirs = ['src']
+        jniLibs.srcDir '../../Libs/Android'
+        manifest.srcFile 'AndroidManifest.xml'
+    }
+}
+
+dependencies {
+    compile project(':DavaEngine')
+    compile files('libs/fmodex.jar')
+}

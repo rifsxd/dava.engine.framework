@@ -1,0 +1,13 @@
+diff --git a/tools/distrib/cefclient.gyp b/tools/distrib/cefclient.gyp
+index 9eb9a8da..c841ff82 100644
+--- a/tools/distrib/cefclient.gyp
++++ b/tools/distrib/cefclient.gyp
+@@ -17,7 +17,7 @@
+         'pkg-config': 'pkg-config'
+       }],
+       [ 'OS=="win"', {
+-        'multi_threaded_dll%': 0,
++        'multi_threaded_dll%': 1,
+       }],
+     ]
+   },

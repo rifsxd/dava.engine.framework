@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/TArc">
+      <file>Resources/openfile.png</file>
+      <file>Resources/stop.png</file>
+      <file>Resources/play.png</file>
+      <file>Resources/pause.png</file>
+      <file>Resources/LightTheme.qss</file>
+      <file>Resources/DarkTheme.qss</file>
+      <file>Resources/settings.png</file>
+      <file>ColorPicker/Private/Resources/dropper.png</file>
+      <file>Resources/cminus.png</file>
+      <file>Resources/cplus.png</file>
+      <file>Resources/import.png</file>
+      <file>Resources/export.png</file>
+      <file>Resources/clear.png</file>
+      <file>Resources/filter.png</file>
+      <file>Resources/save.png</file>
+      <file>ContentFilter/Private/Resources/disable.png</file>
+      <file>ContentFilter/Private/Resources/enabled.png</file>
+      <file>ContentFilter/Private/Resources/inverse-disabled.png</file>
+      <file>ContentFilter/Private/Resources/inverse-enabled.png</file>
+      <file>ContentFilter/Private/Resources/remove.png</file>
+      <file>ContentFilter/Private/Resources/delete.png</file>
+      <file>ContentFilter/Private/Resources/rename.png</file>
+    </qresource>
+</RCC>

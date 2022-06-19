@@ -1,0 +1,22 @@
+diff --git a/build/standalone.gypi b/build/standalone.gypi
+index c0eaef419..f5fc0dab7 100644
+--- a/build/standalone.gypi
++++ b/build/standalone.gypi
+@@ -69,7 +69,7 @@
+               ['component=="shared_library"', {
+                 'RuntimeLibrary': '3',  # /MDd
+               }, {
+-                'RuntimeLibrary': '1',  # /MTd
++                'RuntimeLibrary': '3',  # /MDd
+               }],
+             ],
+           },
+@@ -100,7 +100,7 @@
+               ['component=="shared_library"', {
+                 'RuntimeLibrary': '2',  #/MD
+               }, {
+-                'RuntimeLibrary': '0',  #/MT
++                'RuntimeLibrary': '2',  #/MD
+               }],
+             ],
+           },

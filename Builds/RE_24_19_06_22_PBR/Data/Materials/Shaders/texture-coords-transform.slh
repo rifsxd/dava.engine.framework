@@ -1,0 +1,48 @@
+#if !defined(COMMON_INCLUDED)
+#error "Include common.slh"
+#endif
+
+__forceinline float2 ApplyTex0CoordsTransform(float2 texCoordIn)
+{
+#if ALBEDO_TRANSFORM
+    float3 tc = float3(texCoordIn.xy - 0.5f, 1.0f);
+    float3x3 tTransform;
+    tTransform[0]=Tex0Transform[0].xyz;
+    tTransform[1]=Tex0Transform[1].xyz;
+    tTransform[2]=Tex0Transform[2].xyz;
+    tc = mul(tc, tTransform);
+    texCoordIn = tc.xy + 0.5f;
+    texCoordIn = decalAtlasBoxAlbedo.xy + decalAtlasBoxAlbedo.zw * texCoordIn;
+#endif
+    return texCoordIn;
+}
+
+__forceinline float2 ApplyTex1CoordsTransformHardSkin(float2 texCoordIn, float index)
+{
+#if TILED_DECAL_MASK && TILED_DECAL_TRANSFORM && HARD_SKINNING && !DRAW_DEPTH_ONLY
+    int jIndex = int(index);
+    float3 texCoord = float3(texCoordIn - 0.5f, 1.0f);
+    float3x3 texTransform;
+    texTransform[0]=jointTextureTransforms[jIndex * VEC4_PER_MATRIX3 + 0].xyz;
+    texTransform[1]=jointTextureTransforms[jIndex * VEC4_PER_MATRIX3 + 1].xyz;
+    texTransform[2]=float3(jointTextureTransforms[jIndex * VEC4_PER_MATRIX3 + 0].w, jointTextureTransforms[jIndex * VEC4_PER_MATRIX3 + 1].w, 1.0f);
+    texCoord = mul(texCoord, texTransform);
+    texCoordIn = texCoord.xy + 0.5f;
+#endif
+    return texCoordIn;
+}
+
+__forceinline float2 ApplyTex1CoordsTransform(float2 texCoordIn)
+{
+#if TILED_DECAL_MASK && TILED_DECAL_TRANSFORM && !HARD_SKINNING && !SOFT_SKINNING && !DRAW_DEPTH_ONLY
+    float3 tc = float3(texCoordIn.xy - 0.5f, 1.0f);
+    float3x3 tTransform;
+    tTransform[0]=tiledDecalTextureTransform[0].xyz;
+    tTransform[1]=tiledDecalTextureTransform[1].xyz;
+    tTransform[2]=tiledDecalTextureTransform[2].xyz;
+    tc = mul(tc, tTransform);
+    texCoordIn = tc.xy + 0.5f;
+#endif
+
+ return texCoordIn;
+}

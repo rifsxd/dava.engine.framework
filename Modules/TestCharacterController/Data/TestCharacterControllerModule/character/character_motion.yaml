@@ -1,0 +1,391 @@
+motion-layers:
+ -      
+  layer-id: "move-layer"
+  blend-mode: Override #Can be Override, Add, Diff, LERP
+  root-transform:
+    root-node: "node-Hips"
+    extract-position-x: true
+    extract-position-y: true
+    extract-position-z: false
+    reset-position-x: true
+    reset-position-y: true
+    reset-position-z: false
+  motions:
+   -
+    motion-id: "stand"
+    blend-tree:
+      operation:
+        type: LERP1D
+        parameter: "crouching"
+      nodes:
+       -
+        param-value: 0.0
+        clip: "~res:/TestCharacterControllerModule/character/animations/MIL2_M3_W2_Stand_Aim_Idle.anim"
+       -
+        param-value: 1.0
+        clip: "~res:/TestCharacterControllerModule/character/animations/MIL2_M3_W2_Crouch_Aim_Idle.anim"
+   -
+    motion-id: "move"
+    blend-tree:
+      operation:
+        type: LERP1D
+        parameter: "direction-y"
+      nodes:
+       -
+        param-value: -1.0
+        operation:
+          type: LERP1D
+          parameter: "direction-x"
+        nodes:
+         -
+          param-value: -1.0
+          operation:
+            type: LERP1D
+            parameter: "crouching"
+          nodes:
+           -
+            param-value: 0.0
+            clip: "~res:/TestCharacterControllerModule/character/animations/Jog_Aim/MIL2_M3_W2_Jog_Aim_BL_BkPd_Loop.anim"
+           -
+            param-value: 1.0
+            clip: "~res:/TestCharacterControllerModule/character/animations/Crouch_Aim/MIL2_M3_W2_CrouchWalk_Aim_BL_BkPd_Loop.anim"
+         -
+          param-value: 0.0
+          operation:
+            type: LERP1D
+            parameter: "crouching"
+          nodes:
+           -
+            param-value: 0.0
+            clip: "~res:/TestCharacterControllerModule/character/animations/Jog_Aim/MIL2_M3_W2_Jog_Aim_B_Loop.anim"
+           -
+            param-value: 1.0
+            clip: "~res:/TestCharacterControllerModule/character/animations/Crouch_Aim/MIL2_M3_W2_CrouchWalk_Aim_B_Loop.anim"
+         -
+          param-value: 1.0
+          operation:
+            type: LERP1D
+            parameter: "crouching"
+          nodes:
+           -
+            param-value: 0.0
+            clip: "~res:/TestCharacterControllerModule/character/animations/Jog_Aim/MIL2_M3_W2_Jog_Aim_BR_BkPd_Loop.anim"
+           -
+            param-value: 1.0
+            clip: "~res:/TestCharacterControllerModule/character/animations/Crouch_Aim/MIL2_M3_W2_CrouchWalk_Aim_BR_BkPd_Loop.anim"
+       -
+        param-value: 0.0
+        operation:
+          type: LERP1D
+          parameter: "direction-x"
+        nodes:
+         -
+          param-value: -1.0
+          operation:
+            type: LERP1D
+            parameter: "running"
+          nodes:
+           -
+            param-value: 0.0
+            operation:
+              type: LERP1D
+              parameter: "crouching"
+            nodes:
+             -
+              param-value: 0.0
+              clip: "~res:/TestCharacterControllerModule/character/animations/Jog_Aim/MIL2_M3_W2_Jog_Aim_L_Loop.anim"
+             -
+              param-value: 1.0
+              clip: "~res:/TestCharacterControllerModule/character/animations/Crouch_Aim/MIL2_M3_W2_CrouchWalk_Aim_L_Loop.anim"
+           -
+            param-value: 1.0
+            clip: "~res:/TestCharacterControllerModule/character/animations/Run/MIL2_M3_W2_Run_L_Loop.anim"
+         -
+          param-value: 0.0
+          operation:
+            type: LERP1D
+            parameter: "running"
+          nodes:
+           -
+            param-value: 0.0
+            operation:
+              type: LERP1D
+              parameter: "crouching"
+            nodes:
+             -
+              param-value: 0.0
+              clip: "~res:/TestCharacterControllerModule/character/animations/Jog_Aim/MIL2_M3_W2_Stand_Aim_Idle_Short_21.anim"
+             -
+              param-value: 1.0
+              clip: "~res:/TestCharacterControllerModule/character/animations/Crouch_Aim/MIL2_M3_W2_CrouchWalk_Aim_F_Loop_IP.anim"
+           -
+            param-value: 1.0
+            clip: "~res:/TestCharacterControllerModule/character/animations/Run/MIL2_M3_W2_Stand_Relaxed_Idle_Short_18.anim"
+         -
+          param-value: 1.0
+          operation:
+            type: LERP1D
+            parameter: "running"
+          nodes:
+           -
+            param-value: 0.0
+            operation:
+              type: LERP1D
+              parameter: "crouching"
+            nodes:
+             -
+              param-value: 0.0
+              clip: "~res:/TestCharacterControllerModule/character/animations/Jog_Aim/MIL2_M3_W2_Jog_Aim_R_Loop.anim"
+             -
+              param-value: 1.0
+              clip: "~res:/TestCharacterControllerModule/character/animations/Crouch_Aim/MIL2_M3_W2_CrouchWalk_Aim_R_Loop.anim"
+           -
+            param-value: 1.0
+            clip: "~res:/TestCharacterControllerModule/character/animations/Run/MIL2_M3_W2_Run_R_Loop.anim"
+       -
+        param-value: 1.0
+        operation:
+          type: LERP1D
+          parameter: "direction-x"
+        nodes:
+         -
+          param-value: -1.0
+          operation:
+            type: LERP1D
+            parameter: "running"
+          nodes:
+           -
+            param-value: 0.0
+            operation:
+              type: LERP1D
+              parameter: "crouching"
+            nodes:
+             -
+              param-value: 0.0
+              clip: "~res:/TestCharacterControllerModule/character/animations/Jog_Aim/MIL2_M3_W2_Jog_Aim_FL_Loop.anim"
+             -
+              param-value: 1.0
+              clip: "~res:/TestCharacterControllerModule/character/animations/Crouch_Aim/MIL2_M3_W2_CrouchWalk_Aim_FL_Loop.anim"
+           -
+            param-value: 1.0
+            clip: "~res:/TestCharacterControllerModule/character/animations/Run/MIL2_M3_W2_Run_FL_Loop.anim"
+         -
+          param-value: 0.0
+          operation:
+            type: LERP1D
+            parameter: "running"
+          nodes:
+           -
+            param-value: 0.0
+            operation:
+              type: LERP1D
+              parameter: "crouching"
+            nodes:
+             -
+              param-value: 0.0
+              clip: "~res:/TestCharacterControllerModule/character/animations/Jog_Aim/MIL2_M3_W2_Jog_Aim_F_Loop.anim"
+             -
+              param-value: 1.0
+              clip: "~res:/TestCharacterControllerModule/character/animations/Crouch_Aim/MIL2_M3_W2_CrouchWalk_Aim_F_Loop.anim"
+           -
+            param-value: 1.0
+            clip: "~res:/TestCharacterControllerModule/character/animations/Run/MIL2_M3_W2_Run_F_Loop.anim"
+         -
+          param-value: 1.0
+          operation:
+            type: LERP1D
+            parameter: "running"
+          nodes:
+           -
+            param-value: 0.0
+            operation:
+              type: LERP1D
+              parameter: "crouching"
+            nodes:
+             -
+              param-value: 0.0
+              clip: "~res:/TestCharacterControllerModule/character/animations/Jog_Aim/MIL2_M3_W2_Jog_Aim_FR_Loop.anim"
+             -
+              param-value: 1.0
+              clip: "~res:/TestCharacterControllerModule/character/animations/Crouch_Aim/MIL2_M3_W2_CrouchWalk_Aim_FR_Loop.anim"
+           -
+            param-value: 1.0
+            clip: "~res:/TestCharacterControllerModule/character/animations/Run/MIL2_M3_W2_Run_FR_Loop.anim"
+
+  transitions:
+   -
+    src-motion: "stand"
+    dst-motion: "move"
+    type: cross-fade
+    func: LINEAR
+    duration: 0.4
+    trigger: "move"
+   -
+    src-motion: "move"
+    dst-motion: "stand"
+    type: cross-fade
+    func: LINEAR
+    duration: 0.4
+    trigger: "stop"
+ -
+  layer-id: "aim-layer"
+  blend-mode: Add #Can be Override, Add, Diff, LERP
+  default-motion: "aim-motion"
+  motions:
+   -
+    motion-id: "aim-motion"
+    blend-tree:
+      ignore-mask: [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 12, 13, 14, 19, 20, 24]
+      operation: 
+        type: Diff
+      nodes:
+       -
+        clip: "~res:/TestCharacterControllerModule/character/animations/Stand_Aim_Point/MIL2_M3_W2_Stand_Aim_Point_Center.anim"
+       -
+        operation:
+          type: LERP1D
+          parameter: "aim-angle"
+        nodes:
+         -
+          param-value: -45.0
+          operation:
+            type: LERP1D
+            parameter: "running"
+          nodes:
+           -
+            operation:
+              type: LERP1D
+              parameter: "direction-y"
+            nodes:
+             -
+              param-value: -1.0
+              operation:
+                type: LERP1D
+                parameter: "direction-x"
+              nodes:
+               -
+                param-value: -8.0
+                clip: "~res:/TestCharacterControllerModule/character/animations/Stand_Aim_Point/MIL2_M3_W2_Stand_Aim_Point_RD45.anim"
+               -
+                param-value: 0.0
+                clip: "~res:/TestCharacterControllerModule/character/animations/Stand_Aim_Point/MIL2_M3_W2_Stand_Aim_Point_D90.anim"
+               -
+                param-value: 8.0
+                clip: "~res:/TestCharacterControllerModule/character/animations/Stand_Aim_Point/MIL2_M3_W2_Stand_Aim_Point_LD45.anim"
+             -
+              param-value: 0.0
+              operation:
+                type: LERP1D
+                parameter: "direction-x"
+              nodes:
+               -
+                param-value: -4.0
+                clip: "~res:/TestCharacterControllerModule/character/animations/Stand_Aim_Point/MIL2_M3_W2_Stand_Aim_Point_LD45.anim"
+               -
+                param-value: 0.0
+                clip: "~res:/TestCharacterControllerModule/character/animations/Stand_Aim_Point/MIL2_M3_W2_Stand_Aim_Point_D90.anim"
+               -
+                param-value: 4.0
+                clip: "~res:/TestCharacterControllerModule/character/animations/Stand_Aim_Point/MIL2_M3_W2_Stand_Aim_Point_RD45.anim"
+             -
+              param-value: 1.0
+              operation:
+                type: LERP1D
+                parameter: "direction-x"
+              nodes:
+               -
+                param-value: -8.0
+                clip: "~res:/TestCharacterControllerModule/character/animations/Stand_Aim_Point/MIL2_M3_W2_Stand_Aim_Point_LD45.anim"
+               -
+                param-value: 0.0
+                clip: "~res:/TestCharacterControllerModule/character/animations/Stand_Aim_Point/MIL2_M3_W2_Stand_Aim_Point_D90.anim"
+               -
+                param-value: 8.0
+                clip: "~res:/TestCharacterControllerModule/character/animations/Stand_Aim_Point/MIL2_M3_W2_Stand_Aim_Point_RD45.anim"
+           -
+            param-value: 1.0
+            clip: "~res:/TestCharacterControllerModule/character/animations/Stand_Aim_Point/MIL2_M3_W2_Stand_Aim_Point_Center.anim"
+         -
+          param-value: 0.0
+          clip: "~res:/TestCharacterControllerModule/character/animations/Stand_Aim_Point/MIL2_M3_W2_Stand_Aim_Point_Center.anim"
+         -
+          param-value: 45.0
+          operation:
+            type: LERP1D
+            parameter: "running"
+          nodes:
+           -
+            param-value: 0.0
+            clip: "~res:/TestCharacterControllerModule/character/animations/Stand_Aim_Point/MIL2_M3_W2_Stand_Aim_Point_U45.anim"
+           -
+            param-value: 1.0
+            clip: "~res:/TestCharacterControllerModule/character/animations/Stand_Aim_Point/MIL2_M3_W2_Stand_Aim_Point_Center.anim"
+ -
+  layer-id: "weapon-layer"
+  blend-mode: Add #Can be Override, Add, Diff, LERP
+  motions:
+   -
+    motion-id: "idle"
+   -
+    motion-id: "shoot"
+    blend-tree:
+      operation:
+        type: Diff
+      nodes:
+       -
+        clip: "~res:/TestCharacterControllerModule/character/animations/Stand_Aim_Point/MIL2_M3_W2_Stand_Aim_Point_Center.anim"
+        treat-as-pose: true
+       -
+        clip: "~res:/TestCharacterControllerModule/character/animations/MIL2_M3_W2_Stand_Fire_Continuous.anim"
+        markers:
+          "shoot": [0, 4/30, 8/30, 11/30, 14/30, 18/30, 21/30, 24/30, 28/30]
+   -
+    motion-id: "reload"
+    blend-tree:
+      ignore-mask: [0, 1, 3, 4, 5, 7, 8, 9, 10, 12, 13, 14, 19, 20, 24]
+      operation:
+        type: Diff
+      nodes:
+       -
+        clip: "~res:/TestCharacterControllerModule/character/animations/MIL2_M3_W2_Stand_Aim_Idle.anim"
+        treat-as-pose: true
+       -
+        clip: "~res:/TestCharacterControllerModule/character/animations/MIL2_M3_W2_Stand_Aim_Reload.anim"
+
+  transitions:
+   -
+    src-motion: "idle"
+    dst-motion: "shoot"
+    type: replace
+    sync: immidiate
+    trigger: "shoot"
+   -
+    src-motion: "idle"
+    dst-motion: "reload"
+    type: replace
+    sync: immidiate
+    trigger: "reload"
+   -
+    src-motion: "shoot"
+    dst-motion: "idle"
+    type: replace
+    sync: immidiate
+    trigger: "idle"
+   -
+    src-motion: "shoot"
+    dst-motion: "reload"
+    type: replace
+    sync: immidiate
+    trigger: "reload"
+   -
+    src-motion: "reload"
+    dst-motion: "idle"
+    type: replace
+    sync: immidiate
+    trigger: "idle"
+   -
+    src-motion: "reload"
+    dst-motion: "shoot"
+    type: replace
+    sync: immidiate
+    trigger: "shoot"

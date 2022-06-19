@@ -1,0 +1,182 @@
+How to build Chromium Embedded Framework for Windows to use in dava.engine.
+
+Some important information:
+  - dava.engine uses CEF release branch 2526 (47.0.2526.80)
+  - Visual Studion 2017 is used to build dava.engine
+  - all libraries referenced by dava.engine should be built with dynamic runtime
+  - Visual Studio 2017 can use libraries built with Visual Studio 2015
+
+1. CEF should be built from Visual Studio 2015 Command Prompt, SDk version 10.0.14393.0 is a must:
+
+    "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64 10.0.14393.0
+
+2. Set neccesary environment variables and choose directory to download sources and build CEF:
+
+    Where dava.engine is located:
+        set DAVA_ENGINE_HOME=f:\projects\wot\dava.framework
+        set DAVA_ENGINE_CEF=%DAVA_ENGINE_HOME%\Sources\External\cef
+
+    CEF download directory (should be empty):
+        set CHROMUIM_DOWNLOAD_DIR=f:\chromium\chromium_git
+        if not exist %CHROMUIM_DOWNLOAD_DIR% mkdir %CHROMUIM_DOWNLOAD_DIR%
+
+    Copy automate-git.py to CEF download directory:
+        copy /Y %DAVA_ENGINE_CEF%\build-chromium\automate-git.py %CHROMUIM_DOWNLOAD_DIR%\automate-git.py
+
+    Set CEF release branch:
+        set CHROMIUM_BRANCH=2526
+
+    Setup build variables:
+        set GYP_MSVS_VERSION=2015
+        set GYP_GENERATORS=ninja
+        set GYP_DEFINES=buildtype=Official
+
+3. Download CEF sources and prepare for building:
+
+        cd %CHROMUIM_DOWNLOAD_DIR%
+        python automate-git.py --download-dir=%CHROMUIM_DOWNLOAD_DIR% --no-build --no-debug-build --no-distrib --branch=%CHROMIUM_BRANCH%
+
+    Note: on my computer previous command fails on `gclient sync`. Run automate-git.py script one more time without updating depot tools
+
+        python automate-git.py --download-dir=%CHROMUIM_DOWNLOAD_DIR% --no-depot-tools-update --no-build --no-debug-build --no-distrib --branch=%CHROMIUM_BRANCH%
+
+4. Add CEF depot tools to PATH:
+
+    set PATH=%CHROMUIM_DOWNLOAD_DIR%\depot_tools;%PATH%
+
+5. Inject patch which hides console window when CEF is running in separate process:
+
+    copy /Y %DAVA_ENGINE_CEF%\build-chromium\launch_win.patch %CHROMUIM_DOWNLOAD_DIR%\chromium\src\cef\patch\patches\launch_win.patch
+    copy /Y %CHROMUIM_DOWNLOAD_DIR%\chromium\src\cef\patch\patch.cfg %DAVA_ENGINE_CEF%\build-chromium\temp.cfg
+    copy /Y /B %DAVA_ENGINE_CEF%\build-chromium\temp.cfg /B +%DAVA_ENGINE_CEF%\build-chromium\patch_config.in /B %CHROMUIM_DOWNLOAD_DIR%\chromium\src\cef\patch\patch.cfg /B
+    del /Q /F %DAVA_ENGINE_CEF%\build-chromium\temp.cfg
+
+6. Apply patches which select dynamic runtime and fix some build errors:
+
+    :: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/343398/4
+    copy /Y %DAVA_ENGINE_CEF%\build-chromium\patches\patch_ffmpeg.diff %CHROMUIM_DOWNLOAD_DIR%\chromium\src\third_party\ffmpeg\patch_ffmpeg.diff
+    cd %CHROMUIM_DOWNLOAD_DIR%\chromium\src\third_party\ffmpeg
+    call git apply patch_ffmpeg.diff
+
+    copy /Y %DAVA_ENGINE_CEF%\build-chromium\patches\patch_cef.diff %CHROMUIM_DOWNLOAD_DIR%\chromium\src\cef\patch_cef.diff
+    cd %CHROMUIM_DOWNLOAD_DIR%\chromium\src\cef
+    call git apply patch_cef.diff
+
+    :: http://www.magpcss.org/ceforum/viewtopic.php?f=6&t=14527
+    copy /Y %DAVA_ENGINE_CEF%\build-chromium\patches\patch_src.diff %CHROMUIM_DOWNLOAD_DIR%\chromium\src\patch_src.diff
+    cd %CHROMUIM_DOWNLOAD_DIR%\chromium\src
+    call git apply patch_src.diff
+
+    copy /Y %DAVA_ENGINE_CEF%\build-chromium\patches\patch_v8.diff %CHROMUIM_DOWNLOAD_DIR%\chromium\src\v8\patch_v8.diff
+    cd %CHROMUIM_DOWNLOAD_DIR%\chromium\src\v8
+    call git apply patch_v8.diff
+
+    copy /Y %DAVA_ENGINE_CEF%\build-chromium\patches\patch_breakpad.diff %CHROMUIM_DOWNLOAD_DIR%\chromium\src\breakpad\src\patch_breakpad.diff
+    cd %CHROMUIM_DOWNLOAD_DIR%\chromium\src\breakpad\src
+    call git apply patch_breakpad.diff
+
+    copy /Y %DAVA_ENGINE_CEF%\build-chromium\patches\patch_native_client.diff %CHROMUIM_DOWNLOAD_DIR%\chromium\src\native_client\patch_native_client.diff
+    cd %CHROMUIM_DOWNLOAD_DIR%\chromium\src\native_client
+    call git apply patch_native_client.diff
+
+    copy /Y %DAVA_ENGINE_CEF%\build-chromium\patches\patch_angle.diff %CHROMUIM_DOWNLOAD_DIR%\chromium\src\third_party\angle\patch_angle.diff
+    cd %CHROMUIM_DOWNLOAD_DIR%\chromium\src\third_party\angle
+    call git apply patch_angle.diff
+
+    copy /Y %DAVA_ENGINE_CEF%\build-chromium\patches\patch_pdfium.diff %CHROMUIM_DOWNLOAD_DIR%\chromium\src\third_party\pdfium\patch_pdfium.diff
+    cd %CHROMUIM_DOWNLOAD_DIR%\chromium\src\third_party\pdfium
+    call git apply patch_pdfium.diff
+
+    :: http://www.magpcss.org/ceforum/viewtopic.php?f=6&t=14473
+    copy /Y %DAVA_ENGINE_CEF%\build-chromium\patches\patch_swiftshader.diff %CHROMUIM_DOWNLOAD_DIR%\chromium\src\third_party\swiftshader\patch_swiftshader.diff
+    cd %CHROMUIM_DOWNLOAD_DIR%\chromium\src\third_party\swiftshader
+    git apply patch_swiftshader.diff
+
+7. Generate CEF project files for x86:
+
+    cd %CHROMUIM_DOWNLOAD_DIR%\chromium\src\cef
+    call cef_create_projects.bat
+
+8. Manually create missing files if step 3 failed:
+
+    cd %CHROMUIM_DOWNLOAD_DIR%\chromium
+    if not exist src/build/util/LASTCHANGE call python src\build\util\lastchange.py -o src/build/util/LASTCHANGE
+    if not exist src/build/util/LASTCHANGE.blink call python src\build\util\lastchange.py --git-hash-only -s src/third_party/WebKit -o src/build/util/LASTCHANGE.blink
+
+9. Build CEF x86 (30-40 Gb is required to build one configuration):
+
+    cd %CHROMUIM_DOWNLOAD_DIR%\chromium\src
+    ninja -C out\Release libcef_dll_wrapper
+    ninja -C out\Debug libcef_dll_wrapper
+
+10. Generate CEF project files for x64:
+
+    set GYP_DEFINES=buildtype=Official target_arch=x64
+    cd %CHROMUIM_DOWNLOAD_DIR%\chromium\src\cef
+    call cef_create_projects.bat
+
+11. Build CEF x64 (30-40 Gb is required to build one configuration):
+
+    cd %CHROMUIM_DOWNLOAD_DIR%\chromium\src
+    ninja -C out\Release_x64 libcef_dll_wrapper
+    ninja -C out\Debug_x64 libcef_dll_wrapper
+
+12. Copy built CEF libraries to dava.engine:
+
+    :: Release x86
+    set SOURCE_DIR=%CHROMUIM_DOWNLOAD_DIR%\chromium\src\out\Release
+    set TARGET_DIR=%DAVA_ENGINE_CEF%\Data\x86
+    set TARGET_LIB_DIR=%DAVA_ENGINE_CEF%\Libs\Win32\x86\Release
+    mkdir %TARGET_DIR%\locales
+    mkdir %TARGET_LIB_DIR%
+    copy /Y %SOURCE_DIR%\d3dcompiler_47.dll             %TARGET_DIR%\d3dcompiler_47.dll
+    copy /Y %SOURCE_DIR%\libcef.dll                     %TARGET_DIR%\libcef.dll
+    copy /Y %SOURCE_DIR%\libEGL.dll                     %TARGET_DIR%\libEGL.dll
+    copy /Y %SOURCE_DIR%\libGLESv2.dll                  %TARGET_DIR%\libGLESv2.dll
+    copy /Y %SOURCE_DIR%\cef.pak                        %TARGET_DIR%\cef.pak
+    copy /Y %SOURCE_DIR%\cef_100_percent.pak            %TARGET_DIR%\cef_100_percent.pak
+    copy /Y %SOURCE_DIR%\cef_200_percent.pak            %TARGET_DIR%\cef_200_percent.pak
+    copy /Y %SOURCE_DIR%\cef_extensions.pak             %TARGET_DIR%\cef_extensions.pak
+    copy /Y %SOURCE_DIR%\natives_blob.bin               %TARGET_DIR%\natives_blob.bin
+    copy /Y %SOURCE_DIR%\snapshot_blob.bin              %TARGET_DIR%\snapshot_blob.bin
+    copy /Y %SOURCE_DIR%\icudtl.dat                     %TARGET_DIR%\icudtl.dat
+    copy /Y %SOURCE_DIR%\locales\en-US.pak              %TARGET_DIR%\locales\en-US.pak
+    copy /Y %SOURCE_DIR%\libcef.dll.lib                 %TARGET_LIB_DIR%\libcef.dll.lib
+    copy /Y %SOURCE_DIR%\obj\cef\libcef_dll_wrapper.lib %TARGET_LIB_DIR%\libcef_dll_wrapper.lib
+
+    :: Debug x86
+    set SOURCE_DIR=%CHROMUIM_DOWNLOAD_DIR%\chromium\src\out\Debug
+    set TARGET_LIB_DIR=%DAVA_ENGINE_CEF%\Libs\Win32\x86\Debug
+    mkdir %TARGET_LIB_DIR%
+    copy /Y %SOURCE_DIR%\libcef.dll.lib                 %TARGET_LIB_DIR%\libcef.dll.lib
+    copy /Y %SOURCE_DIR%\obj\cef\libcef_dll_wrapper.lib %TARGET_LIB_DIR%\libcef_dll_wrapper.lib
+
+    :: Release x64
+    set SOURCE_DIR=%CHROMUIM_DOWNLOAD_DIR%\chromium\src\out\Release_x64
+    set TARGET_DIR=%DAVA_ENGINE_CEF%\Data\x64
+    set TARGET_LIB_DIR=%DAVA_ENGINE_CEF%\Libs\Win32\x64\Release
+    mkdir %TARGET_DIR%\locales
+    mkdir %TARGET_LIB_DIR%
+    copy /Y %SOURCE_DIR%\d3dcompiler_47.dll             %TARGET_DIR%\d3dcompiler_47.dll
+    copy /Y %SOURCE_DIR%\libcef.dll                     %TARGET_DIR%\libcef.dll
+    copy /Y %SOURCE_DIR%\libEGL.dll                     %TARGET_DIR%\libEGL.dll
+    copy /Y %SOURCE_DIR%\libGLESv2.dll                  %TARGET_DIR%\libGLESv2.dll
+    copy /Y %SOURCE_DIR%\cef.pak                        %TARGET_DIR%\cef.pak
+    copy /Y %SOURCE_DIR%\cef_100_percent.pak            %TARGET_DIR%\cef_100_percent.pak
+    copy /Y %SOURCE_DIR%\cef_200_percent.pak            %TARGET_DIR%\cef_200_percent.pak
+    copy /Y %SOURCE_DIR%\cef_extensions.pak             %TARGET_DIR%\cef_extensions.pak
+    copy /Y %SOURCE_DIR%\natives_blob.bin               %TARGET_DIR%\natives_blob.bin
+    copy /Y %SOURCE_DIR%\snapshot_blob.bin              %TARGET_DIR%\snapshot_blob.bin
+    copy /Y %SOURCE_DIR%\icudtl.dat                     %TARGET_DIR%\icudtl.dat
+    copy /Y %SOURCE_DIR%\locales\en-US.pak              %TARGET_DIR%\locales\en-US.pak
+    copy /Y %SOURCE_DIR%\libcef.dll.lib                 %TARGET_LIB_DIR%\libcef.dll.lib
+    copy /Y %SOURCE_DIR%\obj\cef\libcef_dll_wrapper.lib %TARGET_LIB_DIR%\libcef_dll_wrapper.lib
+
+    :: Debug x64
+    set SOURCE_DIR=%CHROMUIM_DOWNLOAD_DIR%\chromium\src\out\Debug_x64
+    set TARGET_LIB_DIR=%DAVA_ENGINE_CEF%\Libs\Win32\x64\Debug
+    mkdir %TARGET_LIB_DIR%
+    copy /Y %SOURCE_DIR%\libcef.dll.lib                 %TARGET_LIB_DIR%\libcef.dll.lib
+    copy /Y %SOURCE_DIR%\obj\cef\libcef_dll_wrapper.lib %TARGET_LIB_DIR%\libcef_dll_wrapper.lib
+
+13. Congratulations

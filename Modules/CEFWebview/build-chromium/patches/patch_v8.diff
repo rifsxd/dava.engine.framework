@@ -1,0 +1,31 @@
+diff --git a/build/toolchain.gypi b/build/toolchain.gypi
+index bd081e1791..f8781d908b 100644
+--- a/build/toolchain.gypi
++++ b/build/toolchain.gypi
+@@ -1017,7 +1017,7 @@
+               ['component=="shared_library"', {
+                 'RuntimeLibrary': '3',  # /MDd
+               }, {
+-                'RuntimeLibrary': '1',  # /MTd
++                'RuntimeLibrary': '3',  # /MDd
+               }],
+             ],
+           },
+@@ -1069,7 +1069,7 @@
+               ['component=="shared_library"', {
+                 'RuntimeLibrary': '3',  #/MDd
+               }, {
+-                'RuntimeLibrary': '1',  #/MTd
++                'RuntimeLibrary': '3',  #/MDd
+               }],
+             ],
+           },
+@@ -1259,7 +1259,7 @@
+                   ['component=="shared_library"', {
+                     'RuntimeLibrary': '2',  #/MD
+                   }, {
+-                    'RuntimeLibrary': '0',  #/MT
++                    'RuntimeLibrary': '2',  #/MD
+                   }],
+                 ],
+               },

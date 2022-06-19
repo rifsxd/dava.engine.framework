@@ -1,0 +1,38 @@
+float4 worldPosition;
+#if WIND_ANIMATION
+{
+    float3 windVectorFlex = float3(trunkOscillationParams * input.flexibility, 0.0);
+    float4 distrotedPosition = float4(input.position.xyz + windVectorFlex, 1.0);
+    worldPosition = mul(distrotedPosition, worldMatrix);
+}
+#else
+{
+    #if WAVE_ANIMATION
+    {
+        float4 distrotedPosition = Wave(globalTime, float4(input.position.xyz, 1.0), input.texcoord0);
+        worldPosition = mul(distrotedPosition, worldMatrix);
+    }
+    #elif VERTEX_DISTORTION && VERTEX_SHADER_TEXTURE_FETCH_SUPPORTED
+    {
+        worldPosition = mul(float4(input.position.xyz, 1.0f), worldMatrix);
+        float3 vertDistortion = tex2Dlod(vertexDistortionNoise, input.texcoord0 + vertexDistortionVariationSpeed * globalTime, 0).xyz;
+        vertDistortion = vertDistortion * 2.0f - 1.0f;
+        vertDistortion = vertDistortion * vertexDistortionScale + vertexDistortionWindVector.xyz;
+        worldPosition.xyz += vertDistortion.xyz * input.color0.x;
+    }
+    #else
+    {
+        float4 objectPosition;
+        #if SOFT_SKINNING
+            objectPosition = SoftSkinnedPosition(input.position.xyz, input.indices, input.weights);
+        #elif HARD_SKINNING
+            objectPosition = HardSkinnedPosition(input.position.xyz, input.index);
+        #else
+            objectPosition = float4(input.position.xyz, 1.0);
+        #endif
+        worldPosition = mul(objectPosition, worldMatrix);
+    }
+    #endif
+}
+#endif
+output.position = mul(worldPosition, viewProjMatrix);

@@ -1,0 +1,99 @@
+diff --git a/base/allocator/allocator.gyp b/base/allocator/allocator.gyp
+index ae93e9e03ca9..65f58cab5c39 100644
+--- a/base/allocator/allocator.gyp
++++ b/base/allocator/allocator.gyp
+@@ -61,7 +61,7 @@
+         'Debug_Base': {
+           'msvs_settings': {
+             'VCCLCompilerTool': {
+-              'RuntimeLibrary': '0',
++              'RuntimeLibrary': '2',
+             },
+           },
+           'variables': {
+diff --git a/build/common.gypi b/build/common.gypi
+index cce7b3ca56ed..c36b72a920b5 100644
+--- a/build/common.gypi
++++ b/build/common.gypi
+@@ -1314,7 +1314,7 @@
+     #  'win_use_allocator_shim': 0,
+     #  'win_release_RuntimeLibrary': 2
+     # to ~/.gyp/include.gypi, gclient runhooks --force, and do a release build.
+-    'win_use_allocator_shim%': 1, # 1 = shim allocator via libcmt; 0 = msvcrt
++    'win_use_allocator_shim%': 0, # 1 = shim allocator via libcmt; 0 = msvcrt
+ 
+     # TODO(bradnelson): eliminate this when possible.
+     # To allow local gyp files to prevent release.vsprops from being included.
+@@ -2565,8 +2565,8 @@
+           'win_debug_RuntimeLibrary%': '3',   # 3 = /MDd (debug DLL)
+         }, {
+           # See http://msdn.microsoft.com/en-us/library/aa652367.aspx
+-          'win_release_RuntimeLibrary%': '0', # 0 = /MT (nondebug static)
+-          'win_debug_RuntimeLibrary%': '1',   # 1 = /MTd (debug static)
++          'win_release_RuntimeLibrary%': '2', # 2 = /MD (nondebug DLL)
++          'win_debug_RuntimeLibrary%': '3',   # 3 = /MDd (debug DLL)
+         }],
+         ['OS=="ios"', {
+           # See http://gcc.gnu.org/onlinedocs/gcc-4.4.2/gcc/Optimize-Options.html
+@@ -3166,7 +3166,7 @@
+             'msvs_settings': {
+               'VCCLCompilerTool': {
+                 'WarningLevel': '3',
+-                'WarnAsError': 'true',
++                'WarnAsError': 'false',
+                 'Detect64BitPortabilityProblems': 'false',
+               },
+             },
+@@ -5680,7 +5680,7 @@
+             'EnableFunctionLevelLinking': 'true',
+             'RuntimeTypeInfo': 'false',
+             'WarningLevel': '4',
+-            'WarnAsError': 'true',
++            'WarnAsError': 'false',
+             'DebugInformationFormat': '3',
+             # ExceptionHandling must match _HAS_EXCEPTIONS above.
+             'ExceptionHandling': '0',
+diff --git a/ui/gl/BUILD.gn b/ui/gl/BUILD.gn
+index c63b290d2a27..47c80ac4ba38 100644
+--- a/ui/gl/BUILD.gn
++++ b/ui/gl/BUILD.gn
+@@ -34,8 +34,8 @@ component("gl") {
+     "gl_bindings_autogen_gl.h",
+     "gl_bindings_autogen_osmesa.cc",
+     "gl_bindings_autogen_osmesa.h",
+-    "gl_bindings_skia_in_process.cc",
+-    "gl_bindings_skia_in_process.h",
++    #"gl_bindings_skia_in_process.cc",
++    #"gl_bindings_skia_in_process.h",
+     "gl_context.cc",
+     "gl_context.h",
+     "gl_context_android.cc",
+diff --git a/ui/gl/gl.gyp b/ui/gl/gl.gyp
+index f0f026a1ffe8..88fee409655e 100644
+--- a/ui/gl/gl.gyp
++++ b/ui/gl/gl.gyp
+@@ -46,8 +46,8 @@
+         'gl_bindings_autogen_gl.h',
+         'gl_bindings_autogen_osmesa.cc',
+         'gl_bindings_autogen_osmesa.h',
+-        'gl_bindings_skia_in_process.cc',
+-        'gl_bindings_skia_in_process.h',
++        #'gl_bindings_skia_in_process.cc',
++        #'gl_bindings_skia_in_process.h',
+         'gl_context.cc',
+         'gl_context.h',
+         'gl_context_android.cc',
+diff --git a/third_party/WebKit/Source/platform/geometry/LayoutRect.h b/third_party/WebKit/Source/platform/geometry/LayoutRect.h
+index eea6342c7b10..4fab2427f3c3 100644
+--- a/third_party/WebKit/Source/platform/geometry/LayoutRect.h
++++ b/third_party/WebKit/Source/platform/geometry/LayoutRect.h
+@@ -191,7 +191,9 @@ public:
+     static IntRect infiniteIntRect()
+     {
+         // Due to saturated arithemetic this value is not the same as LayoutRect(IntRect(INT_MIN/2, INT_MIN/2, INT_MAX/2, INT_MAX/2)).
+-        static IntRect infiniteIntRect(infiniteRect());
++        LayoutRect lr = infiniteRect();
++        static IntRect infiniteIntRect(lr);
++        //static IntRect infiniteIntRect(infiniteRect());
+         return infiniteIntRect;
+     }

@@ -1,0 +1,4 @@
+LIBRARY PVRTexLib
+EXPORTS
+    PVRTDecompressPVRTC
+    PVRTDecompressETC

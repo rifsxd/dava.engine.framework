@@ -1,0 +1,22 @@
+diff --git a/build/common.gypi b/build/common.gypi
+index 98addcbb9..b8a100784 100644
+--- a/build/common.gypi
++++ b/build/common.gypi
+@@ -157,7 +157,7 @@
+                                 # match chromium and make sure
+                                 # we don't depend on the dynamic
+                                 # runtime's shared heaps
+-                                'RuntimeLibrary': '1', # /MTd (debug static)
++                                'RuntimeLibrary': '3', # /MDd (debug DLL)
+                             }],
+                         ],
+                     },
+@@ -213,7 +213,7 @@
+                                 # Use the static C runtime to
+                                 # match chromium and make sure
+                                 # we don't depend on the dynamic
+-                                'RuntimeLibrary': '0', # /MT (nondebug static)
++                                'RuntimeLibrary': '2', # /MD (nondebug DLL)
+                             }],
+                         ],
+                     },
