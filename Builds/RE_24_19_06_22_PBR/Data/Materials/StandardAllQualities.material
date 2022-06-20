@@ -1,5 +1,0 @@
-MaterialTemplate:
-    ULTRA : "~res:/Materials/PBR.material"
-    HIGH : "~res:/Materials/StandardNormalizedBlinnPhongPerPixel.Opaque.material"
-    MEDIUM : "~res:/Materials/StandardNormalizedBlinnPhongPerPixelFast.Opaque.material"
-    LOW : "~res:/Materials/StandardNormalizedBlinnPhongPerVertex.Opaque.material"
