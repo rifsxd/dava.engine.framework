@@ -26,7 +26,19 @@ static const int32 SPEED_TREE_POLYGON_GROUPS_PIVOT3_SCENE_VERSION = 22; // conve
 static const int32 COMPONENTS_REFLECTION_SCENE_VERSION = 23; // enum Component::eType removed, scene components serialization without "comp.type".
 static const int32 TRANSFORM_REFACTORING_SCENE_VERSION = 24; // TransformComponent has Transform instead of Matrix4
 
-static const int32 SCENE_FILE_CURRENT_VERSION = TRANSFORM_REFACTORING_SCENE_VERSION;
+static const int32 BLITZ_6_0_SCENE_VERSION = 25;
+static const int32 BLITZ_6_8_SCENE_VERSION = 26;
+static const int32 BLITZ_7_1_SCENE_VERSION = 27;
+static const int32 BLITZ_7_5_SCENE_VERSION = 28;
+
+static const int32 BLITZ_7_7_SCENE_VERSION = 30;
+static const int32 BLITZ_8_2_SCENE_VERSION = 31;
+static const int32 BLITZ_8_6_SCENE_VERSION = 33;
+static const int32 BLITZ_8_8_SCENE_VERSION = 34;
+static const int32 BLITZ_9_0_SCENE_VERSION = 35;
+
+static const int32 SCENE_FILE_CURRENT_VERSION = BLITZ_9_0_SCENE_VERSION;
+static const int32 SAVE_SCENE_VERSION = 25;
 static const int32 SCENE_FILE_MINIMAL_SUPPORTED_VERSION = 9;
 
 class VersionInfo

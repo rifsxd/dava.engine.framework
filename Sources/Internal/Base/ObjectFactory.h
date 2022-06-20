@@ -96,7 +96,9 @@ public:
             //VI: but CastIfEqual casts to the exact types only
             return static_cast<T*>((newFunc)());
         }
-        DVASSERT(false, Format("Class %s creator not found.", name.c_str()).c_str());
+	
+	//AXCH 26 ObjectFactory/MaterialsBindings
+        //DVASSERT(false, Format("Class %s creator not found.", name.c_str()).c_str());						  
         return 0;
     }
 

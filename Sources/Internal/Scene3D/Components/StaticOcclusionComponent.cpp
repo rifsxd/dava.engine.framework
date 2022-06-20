@@ -149,11 +149,14 @@ void StaticOcclusionDataComponent::Deserialize(KeyedArchive* archive, Serializat
         data.sizeX = archive->GetUInt32("sodc.subX", 1);
         data.sizeY = archive->GetUInt32("sodc.subY", 1);
         data.sizeZ = archive->GetUInt32("sodc.subZ", 1);
+        
+        //BLITZ 25 SOCDDATAFIX
+        //MAPS EDITINGS: Remove Static Occlusion!
 
         auto numElements = data.blockCount * data.objectCount / 32;
         uint32 dataSize = static_cast<uint32>(sizeof(uint32) * numElements);
-        DVASSERT(dataSize == archive->GetByteArraySize("sodc.data"));
-        data.SetData(reinterpret_cast<const uint32*>(archive->GetByteArray("sodc.data")), dataSize);
+        //AXCH25
+        data.SetData(reinterpret_cast<const uint32*>(archive->GetByteArray("sodc.data")), archive->GetByteArraySize("sodc.data"));
 
         if (archive->IsKeyExists("sodc.cellHeightOffset"))
         {
