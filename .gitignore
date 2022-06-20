@@ -49,6 +49,7 @@ fmod.log
 *.user
 /DavaConfig.in
 *.xccheckout
+Builds
 
 .vs
 .tup
