@@ -1,3 +1,5 @@
+## latest Patch Built By Rifsxd ##
+
 ## Basic information
 
  ResourceArchiver - .DVPK & .DVPL
@@ -7,27 +9,29 @@
  QuickEd - UI tool > .YAML
  TexConverter - .TEX
 
+## Dependencies for Windows x64 Platform //
 
+ Download and install [Qt5.6](https://download.qt.io/archive/qt/). Add QT as $ENV{PATH}
+ Download and install [Visual Studio 2017](https://www.visualstudio.com/downloads/). Add VisualStudio as $ENV{PATH}
+ Download and install [Python 2.7](https://www.python.org/downloads/). Add Python as $ENV{PATH}
+ Download and install DirectX SDK June 2010 Add DirectX SDk as $ENV{PATH}
+ 
+## Initial Enviroment Setup
 
-## Building the Editor on MacOS
- Download and install [Qt5.6](https://download.qt.io/archive/qt/5.6/5.6.0/)
- Download and install [Xcode](https://developer.apple.com/xcode/)
- Download and install [Python 2.7](https://www.python.org/downloads/). Add python to ${PATH}
- Copy dava.engine/Sources/CMake/ConfigureFiles/DavaConfigTemplate.in as dava.engine/DavaConfig.in
- Edit DavaConfig.in:
-     setup QT\_PATH: QT\_PATH = /Users/username/sdk/Qt/Qt56/clang_64
- Generate ResourceEditor project:
-     dava.engine/Bin/CMakeMac/CMake.app/Contents/bin/cmake -G "Xcode" dava.engine/Programs/ResourceEditor -Bdava.engine/Programs/ResourceEditor/\_build -DPUBLIC\_BUILD=true -DUNITY\_BUILD=true
+* Copy Cmake folder from VS2017 and paste in dava.engine/bin and renmae cmake -> Cmake2017
 
-## latest Patch Built By Rifsxd ##
+* Copy dava.engine/Sources/CMake/ConfigureFiles/DavaConfigTemplate.in as dava.engine/DavaConfig.in
+   Edit DavaConfig.in:
+     setup QT\_PATH: QT\_PATH = C:/Qt5.6.0/msvc2015/
 
-## Building the Editor on Windows
- Download and install [Qt5.6](https://download.qt.io/archive/qt/) 
- Download and install [Visual Studio 2017](https://www.visualstudio.com/downloads/)
- Download and install [Python 2.7](https://www.python.org/downloads/). Add python to ${PATH}
- Download and install DirectX SDK June 2010
- Copy dava.engine/Sources/CMake/ConfigureFiles/DavaConfigTemplate.in as dava.engine/DavaConfig.in
- Edit DavaConfig.in:
-     setup QT\_PATH: QT\_PATH = C:/Qt5.6.0/msvc2017/
- Generate ResourceEditor project:
-     E:/Dava_Engine/Engine/dava.engine.framework/Bin/CMakeVS2017/bin/cmake.exe -G "Visual Studio 15 Win64" E:/Dava_Engine/Engine/dava.engine.framework/Programs/ResourceEditor -BE:/Dava_Engine/Engine/dava.engine.framework/Programs/ResourceEditor/\_build -DPUBLIC\_BUILD=true -DUNITY\_BUILD=true
+## WIndows x64 Dava ResourceEditor Build Guide //
+
+ Generate ResourceEditor VS Project:
+   Run command in Windows Terminal or Command Promt -
+     $ E:/Dava_Engine/Engine/dava.engine.framework/Bin/CMakeVS2017/bin/cmake.exe -G "Visual Studio 15 Win64" E:/Dava_Engine/Engine/dava.engine.framework/Programs/ResourceEditor -BE:/Dava_Engine/Engine/dava.engine.framework/Programs/ResourceEditor/\_build -DPUBLIC\_BUILD=true -DUNITY\_BUILD=true
+
+## ## WIndows x64 Dava QucikEd Build Guide //
+
+ Generate ResourceEditor VS Project:
+   Run command in Windows Terminal or Command Promt -
+     $ E:/Dava_Engine/Engine/dava.engine.framework/Bin/CMakeVS2017/bin/cmake.exe -G "Visual Studio 15 Win64" E:/Dava_Engine/Engine/dava.engine.framework/Programs/QuickEd -BE:/Dava_Engine/Engine/dava.engine.framework/Programs/QuickEd/\_build -DPUBLIC\_BUILD=true -DUNITY\_BUILD=true

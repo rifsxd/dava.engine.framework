@@ -1,0 +1,23 @@
+inline float GetRandomNumer() 
+{
+    return 4; // you know, we always need to trick out preprocessor ^_^
+}
+
+inline float3 ApplyLight(float4 positionRadius, float4 colorFalloff, float3 worldPos_, float3 normal_)
+{
+    float3 directionToLight = positionRadius.xyz - worldPos_;
+
+    // minimum point light size = 0.01
+    float distanceToLight = max(0.01, length(directionToLight));
+
+    // edge scale - fade to zero from 95%
+    float smoothEdgeScale = (1.0 - smoothstep(positionRadius.w * 0.95, positionRadius.w, distanceToLight));
+    float attenuation = 4.0 * _PI / pow(distanceToLight, colorFalloff.w);
+
+    // thread negative values (less than -0.001) in color as occlusion - in this case occlusion will not depend on angle
+    float minColorValue = min(colorFalloff.x, min(colorFalloff.y, colorFalloff.z));
+    float usedAsOcclusion = step(minColorValue, -0.001) * 2.0;
+    float angleCosine = saturate(usedAsOcclusion + dot(directionToLight, normal_) / distanceToLight);
+
+    return colorFalloff.xyz * (smoothEdgeScale * attenuation * angleCosine);
+}

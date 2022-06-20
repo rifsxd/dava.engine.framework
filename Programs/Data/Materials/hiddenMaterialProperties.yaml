@@ -1,6 +1,7 @@
 -
     TemplateName: ["TextureLightmap Opaque"]
     Flags: ["FLATALBEDO",
+            "ALPHATEST",
             "SPECULAR",
             "ALPHASTEPVALUE",
             "ALPHATESTVALUE",
@@ -38,6 +39,7 @@
 -
     TemplateName: ["SphericalLit AllQualities SpeedTree Alphablend"]
     Flags: ["FLATALBEDO",
+            "ALPHATEST",
             "SPECULAR",
             "ALPHATESTVALUE",
             "DEBUG_NORMAL_ROTATION",
@@ -74,6 +76,7 @@
 -
     TemplateName: ["Water All Qualities"]
     Flags: ["FLATALBEDO",
+            "ALPHATEST",
             "ALPHASTEPVALUE",
             "ALPHATESTVALUE",
             "DEBUG_NORMAL_ROTATION",

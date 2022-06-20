@@ -1,4 +1,43 @@
 -
+ name: "Detail [8.5]"
+ path: Detail.material
+-
+ name: "Detail [Q] [8.5]"
+ path: DetailAllQualities.material
+-
+ name: "Decal [8.5]"
+ path: Decal.material
+-
+ name: "SpeedTree [8.5]"
+ path: SpeedTree.material
+-
+ name: "SpeedTree Spherical Lit [Q] [8.5]"
+ path: SpeedTree.SphericalLit.material
+-
+ name: "Spherical Lit [Q] [8.5]"
+ path: SphericalLit.material
+-
+ name: "Textured [8.5]"
+ path: Textured.material
+-
+ name: "Textured Lightmap [8.5]"
+ path: TextureLightmap.material
+-
+ name: "VertexColor [8.5]"
+ path: VertexColor.material
+-
+ name: "Physically Based Lightmap [8.5]"
+ path: PBRLightmap.material
+-
+ name: "Physically Based [8.5]"
+ path: PBR.material
+-
+ name: "Simple Color [8.5]"
+ path: SimpleColor.material
+-
+ name: "Wireframe"
+ path: Wireframe.material
+-
  name: "Decal Alphablend"
  path: Decal.Alphablend.material
 -
@@ -125,7 +164,7 @@
  name: "Skyobject Flowmap"
  path: Skyobject.Flowmap.material
 -
- name: "Landscape AllQualities"
+ name: "Landscape AllQualities [Q]"
  path: TileMaskAllQualities.material
 -
  name: "VertexLit Reflection"
@@ -134,7 +173,7 @@
  name: "PixelLit SpecularMap Reflection Opaque"
  path: PixelLit.SpecularMap.Reflection.Opaque.material
 -
- name: "Water All Qualities"
+ name: "Water All Qualities [Q]"
  path: WaterAllQualities.material
 -
  name: "WaterPerVertex Cubemap"
@@ -161,6 +200,12 @@
  name: "Textured Opaque.NoCull"
  path: Textured.Opaque.NoCull.material
 -
+ name: "Detail All Qualities"
+ path: DetailAllQualities.Opaque.material
+-
+ name: "Detail With Lightmap All Qualities"
+ path: DetailAllQualities.Lightmap.Opaque.material
+-
  name: "Normalized BlinnPhong Per Vertex Opaque"
  path: NormalizedBlinnPhongPerVertex.Opaque.material
 -
@@ -179,13 +224,13 @@
  name: "Normalized BlinnPhong Per Pixel Alphatest + Alphablend"
  path: NormalizedBlinnPhongPerPixel.Alphatest.Alphablend.material
 -
- name: "Normalized BlinnPhong With All Qualities Opaque"
+ name: "Normalized BlinnPhong With All Qualities Opaque [-]"
  path: NormalizedBlinnPhongAllQualities.Opaque.material
 -
- name: "Normalized BlinnPhong With All Qualities Alphatest"
+ name: "Normalized BlinnPhong With All Qualities Alphatest [-]"
  path: NormalizedBlinnPhongAllQualities.Alphatest.material
 -
- name: "Normalized BlinnPhong With All Qualities Alphatest + Alphablend"
+ name: "Normalized BlinnPhong With All Qualities Alphatest + Alphablend [-]"
  path: NormalizedBlinnPhongAllQualities.Alphatest.Alphablend.material
 -
  name: "Normalized BlinnPhong With Lightmap Per Vertex"
@@ -197,10 +242,11 @@
  name: "Normalized BlinnPhong With Lightmap All Qualities"
  path: NormalizedBlinnPhongWithLightmapAllQualities.Opaque.material
 -
- name: "Detail All Qualities"
- path: DetailAllQualities.Opaque.material
+ name: "Standard [PBR]"
+ path: StandardAllQualities.material
 -
- name: "Detail With Lightmap All Qualities"
- path: DetailAllQualities.Lightmap.Opaque.material
-
- 
+ name: "BlinnPhong [Q]"
+ path: BlinnPhongAllQualities.material
+-
+ name: "Shadow Volume"
+ path: ShadowVolume.material

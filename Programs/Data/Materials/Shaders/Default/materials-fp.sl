@@ -140,7 +140,7 @@ fragment_out
     #if (GEO_DECAL_SPECULAR)
         uniform sampler2D specularmap;
     #endif
-    [material][a] property float  inSpecularity               = 1.0;    
+    [material][a] property float  inSpecularity               = 1.0;
     [material][a] property float3 metalFresnelReflectance     = float3(0.5,0.5,0.5);
     [material][a] property float  normalScale                 = 1.0;
 #endif

@@ -1,0 +1,60 @@
+Material:
+    Layers: [ OpaqueRenderLayer ]
+    Shader: ~res:/Materials/Shaders/Default/materials
+    UniqueDefines: [ VERTEX_COLOR ]
+    IgnoreDefines: [ DEPTH_PREPASS_ENABLED, ALLOW_POINT_LIGHTS ]
+    RenderState:
+        depthTest: true
+        depthWrite: true
+        cullMode: FACE_BACK
+        depthFunc: CMP_LESS
+    Passes:
+        ReflectionRefraction:
+        Forward:
+        ForwardWithDepthOnly:
+            RenderState:
+                depthWrite: false
+                depthFunc: CMP_LEQUAL
+        ShadowMap:
+            Shader: ~res:/Materials/Shaders/Depth/depth-prepass
+            ConsiderOnlyDefines: [ SOFT_SKINNING, HARD_SKINNING, WIND_ANIMATION, WAVE_ANIMATION ]
+        DepthOnly:
+            Shader: ~res:/Materials/Shaders/Depth/depth-prepass
+            ConsiderOnlyDefines: [ SOFT_SKINNING, HARD_SKINNING, WIND_ANIMATION, WAVE_ANIMATION ]
+        GBuffer:
+            Stencil:
+                Preset: GBufferUnlit
+    Presets:
+        HighlightAnimation:
+            Layers: [ AlphaTestRenderLayer ]
+            RenderState:
+                blend: true
+        AlphaBlend:
+            Layers: [ TransclucentRenderLayer ]
+            UniqueDefines: [ ALPHABLEND ]
+            RenderState:
+                blend: true
+                depthWrite: false
+            Passes:
+                ForwardWithDepthOnly:
+                    depthFunc: CMP_LESS
+                DepthOnly:
+                    enabled: false
+                ShadowMap:
+                    Shader: ~res:/Materials/Shaders/Depth/depth-alphatest
+                    ConsiderOnlyDefines: [ SOFT_SKINNING, HARD_SKINNING, WIND_ANIMATION, WAVE_ANIMATION, MATERIAL_TEXTURE, PBR_TEXTURE_SET, ALPHA_MASK, ALPHATEST, ALPHATESTVALUE, VERTEX_COLOR, TEXTURE0_SHIFT_ENABLED, TEXTURE0_ANIMATION_SHIFT, PARTICLES_FLOWMAP_ANIMATION, PARTICLES_PERSPECTIVE_MAPPING, FORCE_2D_MODE ]
+                    RenderState:
+                        blend: false
+                        depthWrite: true
+                GBuffer:
+                    enabled: false
+        NoDepthTest:
+            RenderState:
+                depthTest: false
+        ForceAfterOpaqueLayer:
+            Layers: [ AfterOpaqueRenderLayer ]
+        SimpleColor:
+            Shader: ~res:/Materials/Shaders/Default/simple-color
+        DebugColorUnlit:
+            Shader: ~res:/Materials/Shaders/Default/simple-color
+            UniqueDefines: [ DEBUG_UNLIT ]
