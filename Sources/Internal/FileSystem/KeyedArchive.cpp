@@ -68,7 +68,7 @@ bool KeyedArchive::Load(const FilePath& pathName)
     return ret;
 }
 
-bool KeyedArchive::Load(File* archive)
+bool KeyedArchive::Load(File* archive, KeyedArchive * dictionary)
 {
     DAVA::Array<char, 2> header;
     uint32 wasRead = archive->Read(header.data(), 2);
@@ -113,6 +113,86 @@ bool KeyedArchive::Load(File* archive)
     {
         return false;
     }
+    if (version == 2)
+    {
+        uint32 itemsCount = 0;
+        if (4 != archive->Read(&itemsCount, 4))
+        {
+            return false;
+        }
+
+        std::vector<std::string> keys;
+
+        uint32 i;
+        for (i = 0; i < itemsCount; i++)
+        {
+            if (archive->IsEof())
+                return true;
+
+            uint16 len;
+            if (archive->Read(&len, sizeof(len)) != 2)
+                return false;
+            std::unique_ptr<char[]> buf(new char[len + 1]);
+            if (archive->Read(buf.get(), len) != len)
+                return false;
+            buf[len] = '\0';
+            keys.push_back(std::string(buf.get()));
+        }
+
+        for (i = 0; i < itemsCount; i++)
+        {
+            if (archive->IsEof())
+                return true;
+
+            char hash[4];
+            if (archive->Read(hash, 4) != 4)
+                return false;
+
+            VariantType value;
+            value.SetString(keys[i]);
+            SetVariant(std::string(hash, 4), value);
+        }
+
+        return true;
+    }
+    if (version == 0x0102)
+    {
+        // need to use the hash-to-string dictionary
+        DVASSERT(dictionary);
+
+        uint32_t itemsCount;
+        if (archive->Read(&itemsCount, sizeof(itemsCount)) != 4)
+            return false;
+
+        for (uint32_t i = 0; i < itemsCount; i++)
+        {
+            if (archive->IsEof())
+                return true;
+
+            char keyHash[4];
+            if (archive->Read(keyHash, 4) != 4)
+                return false;
+
+            const std::string& key = dictionary->GetString(std::string(keyHash, 4));
+
+            VariantType value;
+            if (!value.Read(archive, dictionary))
+            {
+                return false;
+            }
+
+            SetVariant(key, std::move(value));
+        }
+
+        return true;
+    }
+    else if (version == 0xFF02)
+    {
+        // empty archive
+        return true;
+    }
+
+
     if (version != 1)
     {
         Logger::Error("[KeyedArchive] error loading keyed archive, because version is incorrect");

@@ -169,7 +169,7 @@ private:
     bool SaveDataHierarchy(DataNode* node, File* file, int32 level);
     void LoadDataHierarchy(Scene* scene, DataNode* node, File* file, int32 level);
     bool SaveDataNode(DataNode* node, File* file);
-    bool LoadDataNode(Scene* scene, DataNode* parent, File* file);
+    bool LoadDataNode(Scene* scene, DataNode* parent, File* file, KeyedArchive * dictionary = nullptr);
 
     inline bool IsDataNodeSerializable(DataNode* node)
     {
@@ -178,7 +178,7 @@ private:
     }
 
     bool SaveHierarchy(Entity* node, File* file, int32 level);
-    bool LoadHierarchy(Scene* scene, Entity* node, File* file, int32 level);
+    bool LoadHierarchy(Scene* scene, Entity* node, File* file, int32 level, KeyedArchive * dictionary = nullptr);
 
     void FixLodForLodsystem2(Entity* entity);
 

@@ -316,6 +316,8 @@ void ParticleEffectComponent::Deserialize(KeyedArchive* archive, SerializationCo
     Component::Deserialize(archive, serializationContext);
     loadedVersion = archive->GetUInt32("pe.version", 0);
 
+    return; // disable particles since "pe.emitters" is a list now instead of KeyedArchive
+
     if (loadedVersion == 1) //new effect - load everything here
     {
         const ParticlesQualitySettings::FilepathSelector* filepathSelector = QualitySettingsSystem::Instance()->GetParticlesQualitySettings().GetOrCreateFilepathSelector();

@@ -119,7 +119,7 @@ VersionInfo::VersionMap VersionInfo::GetVersionHistory()
 
     // Current version
     SceneVersion currentVersion;
-    currentVersion.version = SAVE_SCENE_VERSION; // Current version of scene file
+    currentVersion.version = SCENE_FILE_CURRENT_VERSION; // Current version of scene file
     AddVersion(versions, currentVersion);
 
     return versions;

@@ -386,6 +386,17 @@ SceneFileV2::eError SceneFileV2::LoadScene(const FilePath& filename, Scene* scen
         return GetError();
     }
 
+
+    FilePath filenameGeom(filename);
+    filenameGeom.ReplaceExtension(".scg");
+    ScopedPtr<File> fileGeom(File::Create(filenameGeom, File::OPEN | File::READ));
+    if (!fileGeom)
+    {
+        Logger::Error("SceneFileV2::LoadScene failed to open file: %s", filenameGeom.GetAbsolutePathname().c_str());
+        SetError(ERROR_FAILED_TO_CREATE_FILE);
+        return GetError();
+    }
+
     const bool headerValid = ReadHeader(header, file);
 
     if (!headerValid)
@@ -452,8 +463,23 @@ SceneFileV2::eError SceneFileV2::LoadScene(const FilePath& filename, Scene* scen
     if (isDebugLogEnabled)
         Logger::FrameworkDebug("+ load data objects");
 
+    ScopedPtr<KeyedArchive> nodeNames(new KeyedArchive());
+
     if (header.version >= 2)
     {
+        if (header.version >= BLITZ_8_2_SCENE_VERSION)
+        {
+            const bool loaded = nodeNames->Load(file);
+            if (!loaded)
+            {
+                Logger::Error("SceneFileV2::LoadScene failed in file: %s", filename.GetAbsolutePathname().c_str());
+                SetError(ERROR_FILE_READ_ERROR);
+                return GetError();
+            }
+
+            file->Seek(9, File::SEEK_FROM_CURRENT);
+        }
+
         int32 dataNodeCount = 0;
         uint32 result = file->Read(&dataNodeCount, sizeof(int32));
         if (result != sizeof(int32))
@@ -465,10 +491,23 @@ SceneFileV2::eError SceneFileV2::LoadScene(const FilePath& filename, Scene* scen
 
         for (int k = 0; k < dataNodeCount; ++k)
         {
-            const bool nodeLoaded = LoadDataNode(scene, nullptr, file);
+            if (header.version >= BLITZ_8_2_SCENE_VERSION)
+            {
+                uint8_t variantType = 0;
+                if (file->Read(&variantType, 1) != 1)
+                    return ERROR_FILE_READ_ERROR;
+
+                DVASSERT(variantType == VariantType::TYPE_KEYED_ARCHIVE);
+
+                uint32_t len;
+                if (file->Read(&len, 4) != 4)
+                    return ERROR_FILE_READ_ERROR;
+            }
+
+            const bool nodeLoaded = LoadDataNode(scene, nullptr, file, nodeNames.get());
             if (!nodeLoaded)
             {
-                Logger::Error("SceneFileV2::LoadScene LoadDataNode failed in file: %s", filename.GetAbsolutePathname().c_str());
+                Logger::Error("SceneFileV2::LoadScene LoadDataNode failed in file: %s %d", filename.GetAbsolutePathname().c_str(), k);
                 SetError(ERROR_FILE_READ_ERROR);
                 return GetError();
             }
@@ -476,9 +515,10 @@ SceneFileV2::eError SceneFileV2::LoadScene(const FilePath& filename, Scene* scen
 
         NMaterial* globalMaterial = nullptr;
 
-        if (header.nodeCount > 0)
+        if (header.nodeCount > 0 && header.version < BLITZ_8_2_SCENE_VERSION)
         {
             // try to load global material
+            file->Seek(8, File::SEEK_FROM_CURRENT);
             uint32 filePos = static_cast<uint32>(file->GetPos());
             ScopedPtr<KeyedArchive> archive(new KeyedArchive());
             const bool loaded = archive->Load(file);
@@ -515,15 +555,54 @@ SceneFileV2::eError SceneFileV2::LoadScene(const FilePath& filename, Scene* scen
         scene->SetGlobalMaterial(globalMaterial);
     }
 
+    // load geometry
+    Header headerGeom;
+    fileGeom->Read(&headerGeom, sizeof(Header));
+
+    int32 nodeCount = 0;
+    fileGeom->Read(&nodeCount, sizeof(nodeCount));
+    
+    for (int k = 0; k < nodeCount; ++k)
+    {
+        const bool nodeLoaded = LoadDataNode(scene, nullptr, fileGeom);
+        if (!nodeLoaded)
+        {
+            Logger::Error("SceneFileV2::LoadScene LoadDataNode failed in file: %s %d", filenameGeom.GetAbsolutePathname().c_str(), k);
+            SetError(ERROR_FILE_READ_ERROR);
+            return GetError();
+        }
+    }
+
+
     if (isDebugLogEnabled)
     {
         Logger::FrameworkDebug("+ load hierarchy");
     }
 
+    if (header.version >= BLITZ_8_2_SCENE_VERSION)
+    {
+        file->Seek(5, File::SEEK_FROM_CURRENT);   // #hierarchy 94 B2 93 5B 1B
+        if (file->Read(&nodeCount, sizeof(header.nodeCount)) != 4)
+            return ERROR_FILE_READ_ERROR;
+    }
+
     scene->children.reserve(header.nodeCount);
     for (int ci = 0; ci < header.nodeCount; ++ci)
     {
-        const bool loaded = LoadHierarchy(0, scene, file, 1);
+        if (header.version >= BLITZ_8_2_SCENE_VERSION)
+        {
+            uint8_t variantType = 0;
+            if (file->Read(&variantType, 1) != 1)
+                return ERROR_FILE_READ_ERROR;
+
+            DVASSERT(variantType == VariantType::TYPE_KEYED_ARCHIVE);
+
+            uint32_t len;
+            if (file->Read(&len, 4) != 4)
+                return ERROR_FILE_READ_ERROR;
+        }
+
+        const bool loaded = LoadHierarchy(0, scene, file, 1, nodeNames.get());
         if (!loaded)
         {
             Logger::Error("SceneFileV2::LoadScene LoadHierarchy failed in file: %s", filename.GetAbsolutePathname().c_str());
@@ -533,10 +612,10 @@ SceneFileV2::eError SceneFileV2::LoadScene(const FilePath& filename, Scene* scen
     }
 
     UpdatePolygonGroupRequestedFormatRecursively(scene);
-    const bool contextLoaded = serializationContext.LoadPolygonGroupData(file);
+    const bool contextLoaded = serializationContext.LoadPolygonGroupData(fileGeom);
     if (!contextLoaded)
     {
-        Logger::Error("SceneFileV2::LoadScene LoadPolygonGroupData failed in file: %s", filename.GetAbsolutePathname().c_str());
+        Logger::Error("SceneFileV2::LoadScene LoadPolygonGroupData failed in file: %s", filenameGeom.GetAbsolutePathname().c_str());
         SetError(ERROR_FILE_READ_ERROR);
         return GetError();
     }
@@ -772,12 +851,12 @@ bool SceneFileV2::SaveDataNode(DataNode* node, File* file)
     return true;
 }
 
-bool SceneFileV2::LoadDataNode(Scene* scene, DataNode* parent, File* file)
+bool SceneFileV2::LoadDataNode(Scene* scene, DataNode* parent, File* file, KeyedArchive * dictionary)
 {
     bool loaded = true;
     uint32 currFilePos = static_cast<uint32>(file->GetPos());
     ScopedPtr<KeyedArchive> archive(new KeyedArchive());
-    loaded &= archive->Load(file);
+    loaded &= archive->Load(file, dictionary);
 
     String name = archive->GetString("##name");
     DataNode* node = dynamic_cast<DataNode*>(ObjectFactory::Instance()->New<BaseObject>(name));
@@ -883,12 +962,12 @@ bool SceneFileV2::SaveHierarchy(Entity* node, File* file, int32 level)
     return true;
 }
 
-bool SceneFileV2::LoadHierarchy(Scene* scene, Entity* parent, File* file, int32 level)
+bool SceneFileV2::LoadHierarchy(Scene* scene, Entity* parent, File* file, int32 level, KeyedArchive * dictionary)
 {
     bool resultLoad = true;
     bool keepUnusedQualityEntities = QualitySettingsSystem::Instance()->GetKeepUnusedEntities();
     ScopedPtr<KeyedArchive> archive(new KeyedArchive());
-    resultLoad &= archive->Load(file);
+    resultLoad &= archive->Load(file, dictionary);
 
     String name = archive->GetString("##name");
 
@@ -947,7 +1026,7 @@ bool SceneFileV2::LoadHierarchy(Scene* scene, Entity* parent, File* file, int32 
         node->children.reserve(childrenCount);
         for (int ci = 0; ci < childrenCount; ++ci)
         {
-            resultLoad &= LoadHierarchy(scene, node, file, level + 1);
+            resultLoad &= LoadHierarchy(scene, node, file, level + 1, dictionary);
         }
 
         if (removeChildren && childrenCount)

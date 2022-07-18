@@ -45,6 +45,7 @@ const String VariantType::TYPENAME_COLOR = "Color";
 const String VariantType::TYPENAME_FASTNAME = "FastName";
 const String VariantType::TYPENAME_AABBOX3 = "AABBox3";
 const String VariantType::TYPENAME_FILEPATH = "FilePath";
+const String VariantType::TYPENAME_LIST = "List";
 
 const Array<VariantType::PairTypeName, VariantType::TYPES_COUNT> VariantType::variantNamesMap =
 { { VariantType::PairTypeName(VariantType::TYPE_NONE, TYPENAME_UNKNOWN, nullptr),
@@ -72,8 +73,10 @@ const Array<VariantType::PairTypeName, VariantType::TYPES_COUNT> VariantType::va
     VariantType::PairTypeName(VariantType::TYPE_INT8, TYPENAME_INT8, MetaInfo::Instance<int8>()),
     VariantType::PairTypeName(VariantType::TYPE_UINT8, TYPENAME_UINT8, MetaInfo::Instance<uint8>()),
     VariantType::PairTypeName(VariantType::TYPE_INT16, TYPENAME_INT16, MetaInfo::Instance<int16>()),
-    VariantType::PairTypeName(VariantType::TYPE_UINT16, TYPENAME_UINT16, MetaInfo::Instance<uint16>())
-} };
+    VariantType::PairTypeName(VariantType::TYPE_UINT16, TYPENAME_UINT16, MetaInfo::Instance<uint16>()),
+    VariantType::PairTypeName(VariantType::TYPE_UNKNOWN1, TYPENAME_UINT16, MetaInfo::Instance<uint16>()),
+    VariantType::PairTypeName(VariantType::TYPE_LIST, TYPENAME_LIST, MetaInfo::Instance<Vector<VariantType*> >()),
+    } };
 
 VariantType::VariantType()
 {
@@ -1059,7 +1062,7 @@ bool VariantType::Write(File* fp) const
     return true;
 }
 
-bool VariantType::Read(File* fp)
+bool VariantType::Read(File* fp, KeyedArchive * dictionary)
 {
     uint32 read = fp->Read(&type, 1);
     if (read != 1)
@@ -1153,28 +1156,43 @@ bool VariantType::Read(File* fp)
     break;
     case TYPE_STRING:
     {
-        uint32 len;
-        read = fp->Read(&len, 4);
-        if (read != 4)
+        if (dictionary)
         {
-            return false;
-        }
+            char keyHash[4];
+            if (fp->Read(keyHash, 4) != 4)
+                return false;
 
-        stringValue = new String(len, '\0');
-        read = fp->Read(&(*stringValue)[0], len);
-        if (read != len)
+            const std::string& key = dictionary->GetString(std::string(keyHash, 4));
+
+            stringValue = new String(key);
+
+            return true;
+        }
+        else
         {
-            delete stringValue;
-            stringValue = nullptr;
-        }
+            uint32 len;
+            read = fp->Read(&len, 4);
+            if (read != 4)
+            {
+                return false;
+            }
 
-        uint32 slen = static_cast<uint32>(strlen(stringValue->c_str())); //we meet situations when string was "aa\0\0"
-        if (slen != len)
-        {
-            stringValue->resize(slen);
-        }
+            stringValue = new String(len, '\0');
+            read = fp->Read(&(*stringValue)[0], len);
+            if (read != len)
+            {
+                delete stringValue;
+                stringValue = nullptr;
+            }
 
-        return (read == len);
+            uint32 slen = static_cast<uint32>(strlen(stringValue->c_str())); //we meet situations when string was "aa\0\0"
+            if (slen != len)
+            {
+                stringValue->resize(slen);
+            }
+
+            return (read == len);
+        }
     }
     case TYPE_WIDE_STRING:
     {
@@ -1242,7 +1260,7 @@ bool VariantType::Read(File* fp)
         }
         ScopedPtr<UnmanagedMemoryFile> pF(new UnmanagedMemoryFile(pData.data(), len));
         pointerValue = new KeyedArchive();
-        static_cast<KeyedArchive*>(pointerValue)->Load(pF);
+        static_cast<KeyedArchive*>(pointerValue)->Load(pF, dictionary);
     }
     break;
     case TYPE_INT64:
@@ -1336,19 +1354,32 @@ bool VariantType::Read(File* fp)
 
     case TYPE_FASTNAME:
     {
-        uint32 len = 0;
-        read = fp->Read(&len, 4);
-        if (read != 4)
+        if (dictionary)
         {
-            return false;
-        }
+            char keyHash[4];
+            if (fp->Read(keyHash, 4) != 4)
+                return false;
 
-        Vector<char> buf(len + 1, 0);
-        read = fp->Read(buf.data(), len);
-        fastnameValue = new FastName(buf.data());
-        if (read != len)
+            const std::string& key = dictionary->GetString(std::string(keyHash, 4));
+
+            fastnameValue = new FastName(key);
+        }
+        else
         {
-            return false;
+            uint32 len = 0;
+            read = fp->Read(&len, 4);
+            if (read != 4)
+            {
+                return false;
+            }
+
+            Vector<char> buf(len + 1, 0);
+            read = fp->Read(buf.data(), len);
+            fastnameValue = new FastName(buf.data());
+            if (read != len)
+            {
+                return false;
+            }
         }
     }
     break;
@@ -1377,6 +1408,29 @@ bool VariantType::Read(File* fp)
         filepathValue = new FilePath(buf.data());
         return (read == len);
     }
+    case TYPE_UNKNOWN1:
+        {
+            DVASSERT(!"unknown type");
+            return false;
+        }
+        break;
+    case TYPE_LIST:
+        {
+            uint32 len;
+            read = fp->Read(&len, 4);
+            if (read != 4)
+            {
+                return false;
+            }
+
+            // load and through away all values
+            for (uint32 i = 0; i < len; i++)
+            {
+                VariantType v;
+                v.Read(fp, dictionary);
+            }
+        }
+        break;
     default:
     {
         return false;

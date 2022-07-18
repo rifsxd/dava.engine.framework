@@ -392,7 +392,7 @@ public:
         \brief Function loads data from given file.
         \param[in] file to load from
 	 */
-    bool Load(File* file);
+    bool Load(File* file, KeyedArchive * dictionary = nullptr);
     /**
         \brief Function saves data to given file.
         \param[in] file to save
