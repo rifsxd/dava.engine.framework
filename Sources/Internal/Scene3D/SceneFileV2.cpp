@@ -467,7 +467,7 @@ SceneFileV2::eError SceneFileV2::LoadScene(const FilePath& filename, Scene* scen
 
     if (header.version >= 2)
     {
-        if (header.version >= BLITZ_8_2_SCENE_VERSION)
+        if (header.version >= SCENE_FILE_CURRENT_VERSION)
         {
             const bool loaded = nodeNames->Load(file);
             if (!loaded)
@@ -491,7 +491,7 @@ SceneFileV2::eError SceneFileV2::LoadScene(const FilePath& filename, Scene* scen
 
         for (int k = 0; k < dataNodeCount; ++k)
         {
-            if (header.version >= BLITZ_8_2_SCENE_VERSION)
+            if (header.version >= SCENE_FILE_CURRENT_VERSION)
             {
                 uint8_t variantType = 0;
                 if (file->Read(&variantType, 1) != 1)
@@ -515,7 +515,7 @@ SceneFileV2::eError SceneFileV2::LoadScene(const FilePath& filename, Scene* scen
 
         NMaterial* globalMaterial = nullptr;
 
-        if (header.nodeCount > 0 && header.version < BLITZ_8_2_SCENE_VERSION)
+        if (header.nodeCount > 0 && header.version < SCENE_FILE_CURRENT_VERSION)
         {
             // try to load global material
             file->Seek(8, File::SEEK_FROM_CURRENT);
@@ -579,7 +579,7 @@ SceneFileV2::eError SceneFileV2::LoadScene(const FilePath& filename, Scene* scen
         Logger::FrameworkDebug("+ load hierarchy");
     }
 
-    if (header.version >= BLITZ_8_2_SCENE_VERSION)
+    if (header.version >= SCENE_FILE_CURRENT_VERSION)
     {
         file->Seek(5, File::SEEK_FROM_CURRENT);   // #hierarchy 94 B2 93 5B 1B
         if (file->Read(&nodeCount, sizeof(header.nodeCount)) != 4)
@@ -589,7 +589,7 @@ SceneFileV2::eError SceneFileV2::LoadScene(const FilePath& filename, Scene* scen
     scene->children.reserve(header.nodeCount);
     for (int ci = 0; ci < header.nodeCount; ++ci)
     {
-        if (header.version >= BLITZ_8_2_SCENE_VERSION)
+        if (header.version >= SCENE_FILE_CURRENT_VERSION)
         {
             uint8_t variantType = 0;
             if (file->Read(&variantType, 1) != 1)
