@@ -102,7 +102,7 @@ SceneFileV2::eError SceneFileV2::SaveScene(const FilePath& filename, Scene* scen
     header.signature[2] = 'V';
     header.signature[3] = '2';
 
-    header.version = GetEngineContext()->versionInfo->GetCurrentVersion().version;
+    header.version = SC2_SCENE_25_SAVE_VERSION;
     header.nodeCount = scene->GetChildrenCount();
 
     if (scene->GetGlobalMaterial())

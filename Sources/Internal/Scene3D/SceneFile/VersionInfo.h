@@ -36,6 +36,8 @@ static const int32 BLITZ_8_7_SCENE_VERSION = 33;
 static const int32 BLITZ_8_8_SCENE_VERSION = 34;
 static const int32 BLITZ_9_0_SCENE_VERSION = 35;
 
+static const int32 SC2_SCENE_25_SAVE_VERSION = 25;
+
 static const int32 SCENE_FILE_CURRENT_VERSION = BLITZ_9_0_SCENE_VERSION;
 static const int32 SCENE_FILE_MINIMAL_SUPPORTED_VERSION = 9;
 
